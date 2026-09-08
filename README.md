@@ -222,7 +222,7 @@ django-notes-app-DevOps/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/django-notes-app-DevOps.git
+git clone https://github.com/Mridul-Hassan-07/django-notes-app-DevOps.git
 cd django-notes-app-DevOps
 ```
 
@@ -234,10 +234,10 @@ The Docker Compose stack reads these from the shell environment (Jenkins/GitHub 
 export DOCKERHUB_USERNAME=<your-dockerhub-username>
 export DB_NAME=test_db
 export DB_USER=root
-export DB_PASSWORD=<your-db-password>
+export DB_PASSWORD=root
 export DB_PORT=3306
 export DB_HOST=db_cont
-export MYSQL_ROOT_PASSWORD=<your-mysql-root-password>
+export MYSQL_ROOT_PASSWORD=root
 export MYSQL_DATABASE=test_db
 ```
 
