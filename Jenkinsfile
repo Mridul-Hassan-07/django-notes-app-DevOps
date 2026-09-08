@@ -129,11 +129,11 @@ pipeline {
                         scp -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
                             compose.yaml \
-                            "$SSH_USER@3.109.110.26:/home/ubuntu/Docker-django-notes-app/"
+                            "$SSH_USER@YOUR_DOCKER_EC2_IP:/home/ubuntu/Docker-django-notes-app/"
                         echo "Deploying application to Docker EC2..."
                         ssh -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
-                            "$SSH_USER@3.109.110.26" << EOF
+                            "$SSH_USER@YOUR_DOCKER_EC2_IP" << EOF
                             set -e
                             export DOCKERHUB_USERNAME="$DOCKERHUB_USERNAME"
                             export DB_NAME="test_db"
@@ -152,7 +152,7 @@ pipeline {
                             docker image prune -f
                             echo "Deployment status:"
                             docker compose ps
-                    EOF
+EOF
                     '''
                 }
             }
@@ -177,11 +177,11 @@ pipeline {
                         scp -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
                             -r k8s/* \
-                            "$SSH_USER@13.127.214.122:/home/ubuntu/k8s/"
+                            "$SSH_USER@YOUR_K8S_EC2_IP:/home/ubuntu/k8s/"
                         echo "Deploying application to Kubernetes..."
                         ssh -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
-                            "$SSH_USER@13.127.214.122" << EOF
+                            "$SSH_USER@YOUR_K8S_EC2_IP" << EOF
                             set -e
                             NAMESPACE="notes-app"
                             DJANGO_IMAGE="$DOCKERHUB_USERNAME/docker-django-notes-app-django_app:latest"
@@ -214,7 +214,7 @@ pipeline {
                             kubectl get pods --namespace="$NAMESPACE"
                             echo "Services:"
                             kubectl get services --namespace="$NAMESPACE"
-                    EOF
+EOF
                     '''
                 }
             }
@@ -224,8 +224,7 @@ pipeline {
     post {
         always {
             sh '''
-                docker compose down || true
-                sudo rm -rf ./mysql-data
+                docker compose down -v || true
             '''
         }
     }

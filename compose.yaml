@@ -47,7 +47,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
 
     volumes:
-    - ./mysql-data:/var/lib/mysql
+    - mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$${MYSQL_USER}", "-p$${MYSQL_PASSWORD}"]
       interval: 10s
@@ -56,8 +56,9 @@ services:
       start_period: 60s
     networks:
     - three_tier
+
+volumes:
+  mysql-data:
+
 networks:
   three_tier:
-
-
-
