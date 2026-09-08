@@ -1,4 +1,3 @@
-```groovy
 pipeline {
     agent any
 
@@ -58,10 +57,7 @@ pipeline {
         always {
             sh '''
                 docker compose down
-                docker logout || true
             '''
         }
     }
 }
-```
-
