@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-```
 stages {
 
     stage('Checkout') {
@@ -62,7 +61,7 @@ stages {
                     export DB_HOST=db_cont
                     export MYSQL_DATABASE=test_db
 
-                    sleep 30
+                    sleep 200
 
                     curl -f http://localhost:8081
                 '''
@@ -97,7 +96,7 @@ stages {
                 )
             ]) {
                 sh '''
-                    docker compose push nginx django_app
+                    docker compose push
                 '''
             }
         }
@@ -111,7 +110,6 @@ post {
         '''
     }
 }
-```
 
 }
 
