@@ -196,7 +196,7 @@ EOF
                             echo "Updating Django image..."
                             kubectl set image deployment/django \
                                 django="$DJANGO_IMAGE" \
-                                --namespace="$NAMESPACE"
+                                --namespace="notes-app"
                             echo "Updating Nginx image..."
                             kubectl set image deployment/nginx-deploy \
                                 nginx="$NGINX_IMAGE" \
