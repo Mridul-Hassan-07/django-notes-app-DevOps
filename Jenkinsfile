@@ -130,10 +130,15 @@ pipeline {
                             -o StrictHostKeyChecking=no \
                             compose.yaml \
                             "$SSH_USER@3.109.110.26:/home/ubuntu/Docker-django-notes-app/"
+
                         echo "Deploying application to Docker EC2..."
                         ssh -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
-                            "$SSH_USER@3.109.110.26" << EOF
+                            "$SSH_USER@3.109.110.26" \
+                            "DOCKERHUB_USERNAME='$DOCKERHUB_USERNAME' \
+                             DB_PASSWORD='$DB_PASSWORD' \
+                             MYSQL_ROOT_PASSWORD='$MYSQL_ROOT_PASSWORD' \
+                             bash -s" << 'EOF'
                             set -e
                             export DOCKERHUB_USERNAME="$DOCKERHUB_USERNAME"
                             export DB_NAME="test_db"
@@ -178,42 +183,54 @@ EOF
                             -o StrictHostKeyChecking=no \
                             -r k8s/* \
                             "$SSH_USER@13.127.214.122:/home/ubuntu/k8s/"
+
                         echo "Deploying application to Kubernetes..."
                         ssh -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
-                            "$SSH_USER@13.127.214.122" << EOF
+                            "$SSH_USER@13.127.214.122" \
+                            "DOCKERHUB_USERNAME='$DOCKERHUB_USERNAME' bash -s" << 'EOF'
                             set -e
                             NAMESPACE="notes-app"
                             DJANGO_IMAGE="$DOCKERHUB_USERNAME/docker-django-notes-app-django_app:latest"
                             NGINX_IMAGE="$DOCKERHUB_USERNAME/django-nginx:latest"
                             cd /home/ubuntu
+
                             echo "Checking Kubernetes connection..."
                             kubectl get nodes
+
                             echo "Applying namespace..."
                             kubectl apply -f k8s/namespace.yaml
                             echo "Applying Kubernetes manifests..."
                             kubectl apply -f k8s/ -R
+
+                            echo "Confirming django deployment exists in $NAMESPACE..."
+                            kubectl get deployment django --namespace="$NAMESPACE"
+
                             echo "Updating Django image..."
                             kubectl set image deployment/django \
-                                django="\$DJANGO_IMAGE" \
-                                --namespace="\$NAMESPACE"
+                                django="$DJANGO_IMAGE" \
+                                --namespace="$NAMESPACE"
+
                             echo "Updating Nginx image..."
                             kubectl set image deployment/nginx-deploy \
-                                nginx="\$NGINX_IMAGE" \
-                                --namespace="\$NAMESPACE"
+                                nginx="$NGINX_IMAGE" \
+                                --namespace="$NAMESPACE"
+
                             echo "Waiting for Django rollout..."
                             kubectl rollout status deployment/django \
-                                --namespace="\$NAMESPACE" \
+                                --namespace="$NAMESPACE" \
                                 --timeout=180s
+
                             echo "Waiting for Nginx rollout..."
                             kubectl rollout status deployment/nginx-deploy \
-                                --namespace="\$NAMESPACE" \
+                                --namespace="$NAMESPACE" \
                                 --timeout=180s
+
                             echo "Kubernetes deployment completed successfully."
                             echo "Pods:"
-                            kubectl get pods --namespace="\$NAMESPACE"
+                            kubectl get pods --namespace="$NAMESPACE"
                             echo "Services:"
-                            kubectl get services --namespace="\$NAMESPACE"
+                            kubectl get services --namespace="$NAMESPACE"
 EOF
                     '''
                 }
