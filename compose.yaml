@@ -4,7 +4,7 @@ services:
     build:
       context: ./nginx
     ports:
-    - "8080:80"
+    - "8081:80"
     restart: always
     depends_on:
     - django_app
