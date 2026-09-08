@@ -107,6 +107,7 @@ post {
     always {
         sh '''
             docker compose down || true
+            sudo rm -rf ./mysql-data
         '''
     }
 }
