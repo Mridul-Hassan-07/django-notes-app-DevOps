@@ -195,25 +195,25 @@ EOF
                             kubectl apply -f k8s/ -R
                             echo "Updating Django image..."
                             kubectl set image deployment/django \
-                                django="$DJANGO_IMAGE" \
-                                --namespace="notes-app"
+                                django="\$DJANGO_IMAGE" \
+                                --namespace="\$NAMESPACE"
                             echo "Updating Nginx image..."
                             kubectl set image deployment/nginx-deploy \
-                                nginx="$NGINX_IMAGE" \
-                                --namespace="$NAMESPACE"
+                                nginx="\$NGINX_IMAGE" \
+                                --namespace="\$NAMESPACE"
                             echo "Waiting for Django rollout..."
                             kubectl rollout status deployment/django \
-                                --namespace="$NAMESPACE" \
+                                --namespace="\$NAMESPACE" \
                                 --timeout=180s
                             echo "Waiting for Nginx rollout..."
                             kubectl rollout status deployment/nginx-deploy \
-                                --namespace="$NAMESPACE" \
+                                --namespace="\$NAMESPACE" \
                                 --timeout=180s
                             echo "Kubernetes deployment completed successfully."
                             echo "Pods:"
-                            kubectl get pods --namespace="$NAMESPACE"
+                            kubectl get pods --namespace="\$NAMESPACE"
                             echo "Services:"
-                            kubectl get services --namespace="$NAMESPACE"
+                            kubectl get services --namespace="\$NAMESPACE"
 EOF
                     '''
                 }
