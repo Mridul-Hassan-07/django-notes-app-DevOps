@@ -31,5 +31,4 @@ Install Nginx reverse proxy to make this application available
 
 `sudo apt-get update`
 `sudo apt install nginx`
-# Jenkins Webhook Test
-webhook test Tue Sep  8 07:10:15 PM +06 2026
+
